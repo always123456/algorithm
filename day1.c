@@ -18,6 +18,7 @@ int addWithoutArithmetic(int a, int b) {
 int main() {
     int dataA, dataB;
     printf("%d\n", addWithoutArithmetic(dataA, dataB));
+    printf("github repository的改动1\n");
     return 0;
 }
 
