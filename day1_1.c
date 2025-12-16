@@ -54,7 +54,9 @@ char *toBinaryString(int n, char *buffer) {
 int fromBinaryString(const char *binaryString) {
     int result = 0;
     for (int i = 0; i < 32; i++) {
-        result = (result << 1) | (binaryString[i] - '0');
+        // result = (result << 1) | (binaryString[i] - '0');
+        int num = binaryString[i] - '0';
+        result = result * 2 + num;
     }
 
     return result;
