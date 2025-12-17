@@ -26,7 +26,7 @@ int addWithoutArithmetic(int a, int b) {
 }
 ```
 ### 2.十进制的有符号整数（或无符号整数）与32位二进制之间的互换
-``` c
+``` c	
 char *toBinaryString(int n, char *buffer) {
 	for (int i = 31; i >= 0; i--) {
 		buffer[i] = (n & 1) ? '1' : '0';
