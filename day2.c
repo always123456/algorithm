@@ -133,6 +133,7 @@ int* twoSum_by_hash(int* nums, int numsSize, int target, int* returnSize) {
 
 
 
+
 // 链表
 struct LNode {
     int data;
@@ -228,6 +229,20 @@ bool deleteNode(struct LNode **head, int key) {
 }
 
 
+// 搜索节点
+struct LNode* searchNode (struct LNode *head, int key) {
+    struct LNode *temp = head;
+    while (temp != NULL) {
+        if (temp -> data == key) {
+            return temp;
+        } else {
+            temp = temp -> next;
+        }
+    }
+    return NULL;
+}
+
+
 int main() {
 
     // // 链表简述：
@@ -300,6 +315,23 @@ int main() {
     while (temp != NULL) {
         printf("%d\n", temp -> data);
         temp = temp -> next;
+    }
+
+
+    // 搜索节点
+    struct LNode *result1 = searchNode(head, 10);
+    struct LNode *result2 = searchNode(head, 30);
+
+    if (result1 == NULL) {
+        printf("未搜索到\n");
+    } else {
+        printf("%d\n", result1->data);
+    }
+
+    if (result2 == NULL) {
+        printf("未搜索到\n");
+    } else {
+        printf("%d\n", result2->data);
     }
 
     return 0;
