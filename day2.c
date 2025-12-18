@@ -143,7 +143,9 @@ struct LNode {
 struct LNode *head = NULL, *middle = NULL, *last = NULL;
 
 void insertHead (int e) {
-    struct LNode *newNode = (struct LNode*)malloc(sizeof(struct LNode*));
+    struct LNode *newNode = (struct LNode*)malloc(sizeof(struct LNode));
+    // 动态内存空间使用sizeof(struct LNode)的大小，分配内存空间不足，写入
+    // newNode->data和newNode -> next时会越界，破坏内存布局，触发段错误。
     newNode->data = e;
     newNode -> next = head;
 
@@ -152,7 +154,7 @@ void insertHead (int e) {
 
 //单链表 尾插法插入新节点，最坏的情况的时间复杂度为O(n)
 void insertLast (int e) {
-    struct LNode *newNode = (struct LNode *)malloc(sizeof(struct LNode*));
+    struct LNode *newNode = (struct LNode *)malloc(sizeof(struct LNode));
 
     newNode -> data = e;
     newNode -> next = NULL;
@@ -172,7 +174,7 @@ void insertLast (int e) {
 
 //单链表 时间复杂度更低的尾插法，引入了额外的存储链表末尾节点的last指针，时间复杂度始终为O(1)
 void insertLast_lesstime (int e) {
-    struct LNode *newNode = (struct LNode *)malloc(sizeof(struct LNode*));
+    struct LNode *newNode = (struct LNode *)malloc(sizeof(struct LNode));
 
     newNode -> data = e;
     newNode -> next = NULL;
@@ -186,29 +188,45 @@ void insertLast_lesstime (int e) {
     }
 }
 
-//单链表 删除元素 ??? 
-bool deleteNode(struct LNode *head, int key) {
-    struct LNode *temp = head;
-    if ((head) -> data == key) {
-        temp = head;
-        head = head -> next;
-        free(temp);         // 释放被删除节点的内存空间
+
+/*
+上面添加节点的时候，内存大小分配错误，遍历输出链表时只是读取数据，不会碰校验信息
+但是删除节点时，利用到了free()函数，分配8字节大小，却填入16字节数据，
+会覆盖内存块头部的校验信息，判定为非法内存操作。
+*/
+//单链表 删除元素  (由于需要对头节点指针进行更改，所以采用二级指针)
+bool deleteNode(struct LNode **head, int key) {
+    // 处理空链表
+    if (head == NULL || *head == NULL) {
+        return false;
+    }
+    struct LNode *temp1 = NULL;
+
+    if ((*head) -> data == key) {   // 删除头节点
+        temp1 = *head;
+        *head = (*head) -> next;
+        free(temp1);         // 释放被删除节点的内存空间
         return true;
     } else {
-        struct LNode *nowNode = head -> next;
-        while (nowNode != NULL) {
-            if (nowNode -> data == key) {
-                temp = nowNode;
-                nowNode = nowNode -> next;
-                free(temp);
+        struct LNode *pre = *head;
+        /*
+        由于链表具有单向性，无法从当前节点获取到上一个节点，因此需要提前一个节点读取，
+        而对下一节点执行判断删除操作。
+        */
+        while (pre -> next != NULL) {
+            if (pre -> next -> data == key) {
+                temp1 = pre -> next;             // 记得释放被删除节点的内存
+                pre -> next = pre -> next -> next;
+                free(temp1);    
                 return true;
             } else {
-                nowNode = nowNode -> next;
+                pre = pre -> next;
             }
         }
     }
     return false;  
 }
+
 
 int main() {
 
@@ -233,6 +251,7 @@ int main() {
     // }
 
 
+
     // // 头插法插入新节点(以恰好相反的顺序插入)
     // int nums[3] = {10, 20, 30};
 
@@ -248,22 +267,40 @@ int main() {
     // }
 
     
-    // 尾插法插入新节点(以相同的顺序插入)
-    int nums[3] = {10, 20, 30};
 
-    for (int i = 0; i <= 2; i++) {
+    // // 尾插法插入新节点(以相同的顺序插入)
+    // int nums[3] = {10, 20, 30};
+
+    // for (int i = 0; i <= 2; i++) {
+    //     insertLast_lesstime(nums[i]);
+    //     // // 或用
+    //     // insertLast(nums[i]);
+    // }
+
+    // // 遍历链表
+    // struct LNode *temp = head;
+    // while (temp != NULL) {
+    //     printf("%d\n", temp->data);
+    //     temp = temp -> next;
+    // }
+
+
+
+    // 删除节点
+    int nums[4] = {10, 20, 30, 40};
+
+    // 插入节点
+    for (int i = 0; i < 4; i++) {
         insertLast_lesstime(nums[i]);
-        // // 或用
-        // insertLast(nums[i]);
     }
-
+    // 删除节点
+    bool result = deleteNode(&head, 30);
     // 遍历链表
     struct LNode *temp = head;
     while (temp != NULL) {
-        printf("%d\n", temp->data);
+        printf("%d\n", temp -> data);
         temp = temp -> next;
     }
-
 
     return 0;
 }
