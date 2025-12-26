@@ -2,7 +2,6 @@
 ## 1.链表
 ### 1.1 单链表
 #### 1.1.1 不带头节点单链表：
-***
 1、不带头节点的单链表的生成：
 ``` c
 struct LNode {
@@ -196,7 +195,7 @@ bool deleteNode (LNode **head, int key) {
 }
 ```
 ***
-#### 1.1.3 双链表：
+### 1.2 双链表：
 1、双链表的构建：（不循环的链表）
 ``` c
 typedef struct DNode {
@@ -258,9 +257,71 @@ void addLast (DNode *pHead, int e) {
 	newNode -> next =  NULL;
 }
 ```
+***
+## 2.哈希表
+### 2.1 哈希链表数据结构的定义
+``` c
+#define DEFAULT_SIZE 20
 
+// 链表节点的定义
+typedef struct _ListNode {
+	struct _ListNode *next;
+	int key;
+	void *data;
+}ListNode, *LinkList;
 
+// 哈希表的定义
+typedef struct _HashTable {
+	int TableSize;
+	ListNode **Thelists;	// 存储各条链表头节点的一个指针数组
+}HashTable;
 
+// 哈希函数：传递一个key，计算索引，定位其在Hash桶中的位置(以取余为例)
+int Hash(int key, int TableSize) {
+	return (key % TableSize);
+}
+```
+### 2.2 哈希表初始化
+``` c
+HashTable *InitTable(int TableSize) {
+	HashTable* hTable = NULL;	// 哈希表指针
+
+	if (TableSize <= 0) {
+		printf("叫你给一个大于0的，你不听，那就听我的\n");
+		TableSize = DEFAULT_SIZE;
+	}
+
+	// 为哈希表分配空间
+	hTable = (HashTable *)malloc(sizeof(HashTable));
+
+	// 判断是否分配成功
+	if (hTable == NULL) {
+		printf("HashTable malloc error\n");
+		return NULL;
+	}
+
+	hTable -> TableSize = TableSize;
+
+	// 为Hash桶分配内存空间
+	hTable -> Thelists = (LinkList *)malloc(TableSize * sizeof(LinkList));
+
+	// 为Hash桶中的每个头节点指针初始化链表
+	for (int i = 0; i < TableSize; i++) {
+		hTable -> Thelists[i] = (ListNode *)malloc(sizeof(ListNode));
+
+		// 判断是否分配成功
+		if (hTable -> Thelists[i] == NULL) {
+			printf("HashTable malloc error\n");
+			free(hTable -> Thelists);
+			free(hTable);	// 有手动分配空间，必有手动释放内存
+			return NULL;
+		} else {
+			memset(hTable -> Thelists[i], 0, sizeof(ListNode));	// 初始元素均设为0
+		}
+	}
+	return hTable;
+}
+```
 
 
 

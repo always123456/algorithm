@@ -10,32 +10,32 @@
 //  假设每种输入只会对应一个答案，并且你不能使用两次相同的元素。
 
 
-// 暴力枚举：O(n**2)的时间复杂度
-int *twonums(int *nums, int target, int numsSize) {
-    int *result = malloc(2 * sizeof(int));      // 动态内存分配
-    if (!result) return NULL;
-    int flag = 0;
-    for (int i = 0; i < numsSize - 1; i++ ) {
-        for (int j = i + 1; j < numsSize; j++) {
-            if (nums[i] + nums[j] == target) {
-                result[0] = i;
-                result[1] = j;
-                flag = 1;
-                break;
-            }
-        }
-        if (flag == 1) {
-            break;
-        }
-    }
+// // 暴力枚举：O(n**2)的时间复杂度
+// int *twonums(int *nums, int target, int numsSize) {
+//     int *result = malloc(2 * sizeof(int));      // 动态内存分配
+//     if (!result) return NULL;
+//     int flag = 0;
+//     for (int i = 0; i < numsSize - 1; i++ ) {
+//         for (int j = i + 1; j < numsSize; j++) {
+//             if (nums[i] + nums[j] == target) {
+//                 result[0] = i;
+//                 result[1] = j;
+//                 flag = 1;
+//                 break;
+//             }
+//         }
+//         if (flag == 1) {
+//             break;
+//         }
+//     }
 
-    if (!flag) {
-        free(result);
-        return NULL;
-    }
+//     if (!flag) {
+//         free(result);
+//         return NULL;
+//     }
 
-    return result;          // 返回一个整数数组指针
-}
+//     return result;          // 返回一个整数数组指针
+// }
 
 
 // 哈希表：
@@ -48,51 +48,51 @@ int *twonums(int *nums, int target, int numsSize) {
 //     }
 // }
 
-// 有uthash.h文件进行哈希表的各种操作
-struct HashTable {
-    int key;
-    int val;
-    UT_hash_handle hh;  // hash handle (哈希句柄)的缩写
-};
+// // 有uthash.h文件进行哈希表的各种操作
+// struct HashTable {
+//     int key;
+//     int val;
+//     UT_hash_handle hh;  // hash handle (哈希句柄)的缩写
+// };
 
-struct HashTable* hashtable;
+// struct HashTable* hashtable;
 
-// 寻找
-struct HashTable* find(int ikey) {
-    struct HashTable* tmp;
-    HASH_FIND_INT(hashtable, &ikey, tmp);
-    return tmp;
-}   
+// // 寻找
+// struct HashTable* find(int ikey) {
+//     struct HashTable* tmp;
+//     HASH_FIND_INT(hashtable, &ikey, tmp);
+//     return tmp;
+// }   
 
-// 插入
-void insert(int ikey, int ival) {
-    struct HashTable* it = find(ikey);
-    if (it == NULL) {
-        struct HashTable* tmp = malloc(sizeof(struct HashTable));
-        tmp->key = ikey, tmp->val = ival;
-        HASH_ADD_INT(hashtable, key, tmp);
-    } else {
-        it->val = ival;
-    }
-}
+// // 插入
+// void insert(int ikey, int ival) {
+//     struct HashTable* it = find(ikey);
+//     if (it == NULL) {
+//         struct HashTable* tmp = malloc(sizeof(struct HashTable));
+//         tmp->key = ikey, tmp->val = ival;
+//         HASH_ADD_INT(hashtable, key, tmp);
+//     } else {
+//         it->val = ival;
+//     }
+// }
 
-int* twoSum_by_hash(int* nums, int numsSize, int target, int* returnSize) {
-    hashtable = NULL;
+// int* twoSum_by_hash(int* nums, int numsSize, int target, int* returnSize) {
+//     hashtable = NULL;
 
-    for (int i = 0; i < numsSize; i++) {
-        struct HashTable* it = find(target - nums[i]);
-        if (it != NULL) {
-            int* ret = malloc(sizeof(int) * 2);
-            ret[0] = it->val, ret[1] = i;
-            *returnSize = 2;
-            return ret;
-        }
-        insert(nums[i], i);
-    }
+//     for (int i = 0; i < numsSize; i++) {
+//         struct HashTable* it = find(target - nums[i]);
+//         if (it != NULL) {
+//             int* ret = malloc(sizeof(int) * 2);
+//             ret[0] = it->val, ret[1] = i;
+//             *returnSize = 2;
+//             return ret;
+//         }
+//         insert(nums[i], i);
+//     }
 
-    *returnSize = 0;
-    return NULL;
-}
+//     *returnSize = 0;
+//     return NULL;
+// }
 
 // int main(void) {
 //     int nums[] = {2, 7, 11, 15};
@@ -315,157 +315,233 @@ int* twoSum_by_hash(int* nums, int numsSize, int target, int* returnSize) {
 
 
 
-// 双链表
-typedef struct DNode {
-    int data;
-    struct DNode *prior;
-    struct DNode *next;
-}DNode, *DLinkList;
+// // 双链表
+// typedef struct DNode {
+//     int data;
+//     struct DNode *prior;
+//     struct DNode *next;
+// }DNode, *DLinkList;
 
-// 双链表的头插法(带头结点)
-bool List_Insert (DLinkList pHead, int e) {
-    DNode* newNode = (DNode *)malloc(sizeof(DNode));
-    newNode -> data = e;
+// // 双链表的头插法(带头结点)
+// bool List_Insert (DLinkList pHead, int e) {
+//     DNode* newNode = (DNode *)malloc(sizeof(DNode));
+//     newNode -> data = e;
 
-    newNode ->next = pHead -> next;
-    newNode -> prior = pHead;
-    if (pHead -> next != NULL) {
-        // 将前一个首元节点的前驱指向新节点
-        pHead -> next -> prior = newNode;
-    }
-    pHead -> next = newNode;
-    return true;
-}
+//     newNode ->next = pHead -> next;
+//     newNode -> prior = pHead;
+//     if (pHead -> next != NULL) {
+//         // 将前一个首元节点的前驱指向新节点
+//         pHead -> next -> prior = newNode;
+//     }
+//     pHead -> next = newNode;
+//     return true;
+// }
 
-// 双链表的尾插法(带头结点)
-void addLast (DLinkList pHead, int e) {
-    DNode* newNode = (DNode *)malloc(sizeof(DNode));
-    newNode -> data = e;
+// // 双链表的尾插法(带头结点)
+// void addLast (DLinkList pHead, int e) {
+//     DNode* newNode = (DNode *)malloc(sizeof(DNode));
+//     newNode -> data = e;
     
-    // 找到尾结点
-    DNode *lastNode = pHead;
-    while (lastNode -> next != NULL) {
-        lastNode = lastNode -> next;
-    }
-    lastNode -> next = newNode;
-    newNode -> prior = lastNode;
-    newNode -> next = NULL;
+//     // 找到尾结点
+//     DNode *lastNode = pHead;
+//     while (lastNode -> next != NULL) {
+//         lastNode = lastNode -> next;
+//     }
+//     lastNode -> next = newNode;
+//     newNode -> prior = lastNode;
+//     newNode -> next = NULL;
+// }
+
+
+// int main() {
+
+//     // // 链表简述：
+//     // head = (struct LNode *)malloc(sizeof(struct LNode *));
+//     // middle = (struct LNode *)malloc(sizeof(struct LNode *));
+//     // last = (struct LNode *)malloc(sizeof(struct LNode *));
+
+//     // head -> data = 20;
+//     // middle -> data = 10;
+//     // last -> data = 30;
+
+//     // head -> next = middle;
+//     // middle -> next = last;
+//     // last -> next = NULL;
+
+//     // // 遍历链表
+//     // struct LNode *temp = head;
+//     // while (temp != NULL) {
+//     //     printf("%d\n", temp -> data);
+//     //     temp = temp->next;
+//     // }
+
+
+//     // // 头插法插入新节点(以恰好相反的顺序插入)
+//     // int nums[3] = {10, 20, 30};
+
+//     // for (int i = 0; i <= 2; i++) {
+//     //     insertHead(nums[i]);
+//     // }
+
+//     // //遍历链表
+//     // struct LNode *temp = head;
+//     // while (temp != NULL) {
+//     //     printf("%d\n", temp->data);
+//     //     temp = temp -> next;
+//     // }
+
+    
+//     // // 尾插法插入新节点(以相同的顺序插入)
+//     // int nums[3] = {10, 20, 30};
+
+//     // for (int i = 0; i <= 2; i++) {
+//     //     insertLast_lesstime(nums[i]);
+//     //     // // 或用
+//     //     // insertLast(nums[i]);
+//     // }
+
+//     // // 遍历链表
+//     // struct LNode *temp = head;
+//     // while (temp != NULL) {
+//     //     printf("%d\n", temp->data);
+//     //     temp = temp -> next;
+//     // }
+
+//     // // 删除节点
+//     // int nums[4] = {10, 20, 30, 40};
+
+//     // // 插入节点
+//     // for (int i = 0; i < 4; i++) {
+//     //     insertLast_lesstime(nums[i]);
+//     // }
+//     // // 删除节点
+//     // bool result = deleteNode(&head, 30);
+//     // // 遍历链表
+//     // struct LNode *temp = head;
+//     // while (temp != NULL) {
+//     //     printf("%d\n", temp -> data);
+//     //     temp = temp -> next;
+//     // }
+
+//     // // 搜索节点
+//     // struct LNode *result1 = searchNode(head, 10);
+//     // struct LNode *result2 = searchNode(head, 30);
+
+//     // if (result1 == NULL) {
+//     //     printf("未搜索到\n");
+//     // } else {
+//     //     printf("%d\n", result1->data);
+//     // }
+
+//     // if (result2 == NULL) {
+//     //     printf("未搜索到\n");
+//     // } else {
+//     //     printf("%d\n", result2->data);
+//     // }
+
+
+
+//     // // 带头结点的赋值
+//     // init_global_head(sizeof(LNode));
+//     // head -> next = NULL;
+//     // head -> data = 0;
+
+
+
+//     // 双链表的构建(可以实现循环链表，即last的next指向head，head的prior指向last)
+//     DLinkList head = (DNode *)malloc(sizeof(DNode));
+//     DNode* first = (DNode *)malloc(sizeof(DNode));
+//     DNode* middle = (DNode *)malloc(sizeof(DNode));
+//     DNode* last = (DNode *)malloc(sizeof(DNode));
+
+//     head -> data = NULL;
+//     first -> data = 10;
+//     middle -> data = 20;
+//     last -> data = 30;
+
+//     head -> next = first;
+//     first -> prior = head;
+//     first -> next = middle;
+//     middle -> prior = first;
+//     middle -> next = last;
+//     last -> prior = middle;
+//     last -> next = NULL;
+
+//     return 0;
+// }
+
+
+
+
+
+
+// 哈希表
+// 哈希链表数据结构的定义
+#define DEFAULT_SIZE 16
+
+// 链表节点
+typedef struct _ListNode {
+    struct _ListNode* next;
+    int key;
+    void *data;     // 键值对
+}ListNode, *List;
+
+// 哈希表
+typedef struct _HashTable {
+    int TableSize;
+    List *Thelists;    // 每个元素是哈希链表头节点的指针，需要用二级指针形式充当数组形式储存
+}HashTable;
+
+// 哈希函数:传递一个key 计算索引，定位Hash桶的位置
+int Hash(int key, int TableSize) {
+    return (key%TableSize);
 }
 
+// 初始化哈希表
+HashTable *InitHash(int TableSize) {
+    HashTable *hTable = NULL;       // 哈希表指针
+
+    if (TableSize <= 0) {
+        TableSize = DEFAULT_SIZE;
+    }
+
+    // 给哈希表分配空间
+    hTable = (HashTable *)malloc(sizeof(HashTable));
+
+    // 判断是否分配成功
+    if (hTable == NULL) {
+        printf("HashTable malloc error\n");
+        return NULL;
+    }
+
+    hTable ->TableSize = TableSize;
+
+    // 为Hash桶分配内存空间，为一个指针数组，存储各条链表的头节点
+    hTable -> Thelists = (List *)malloc(TableSize*sizeof(List));
+
+    // 为Hash桶对应的指针数组初始化链表节点
+    for (int i = 0; i < TableSize; i++) {
+        // 第i+1个链表的头节点指针内存的分配
+        hTable -> Thelists[i] = (ListNode *)malloc(sizeof(ListNode));
+
+        if (hTable -> Thelists[i] == NULL) {
+            printf("HastTable malloc error\n");
+            free(hTable -> Thelists);
+            free(hTable);
+            return NULL;
+        } else {
+            memset(hTable->Thelists[i], 0, sizeof(ListNode)); 
+        }
+    }
+    return hTable;
+}
 
 int main() {
-
-    // // 链表简述：
-    // head = (struct LNode *)malloc(sizeof(struct LNode *));
-    // middle = (struct LNode *)malloc(sizeof(struct LNode *));
-    // last = (struct LNode *)malloc(sizeof(struct LNode *));
-
-    // head -> data = 20;
-    // middle -> data = 10;
-    // last -> data = 30;
-
-    // head -> next = middle;
-    // middle -> next = last;
-    // last -> next = NULL;
-
-    // // 遍历链表
-    // struct LNode *temp = head;
-    // while (temp != NULL) {
-    //     printf("%d\n", temp -> data);
-    //     temp = temp->next;
-    // }
-
-
-    // // 头插法插入新节点(以恰好相反的顺序插入)
-    // int nums[3] = {10, 20, 30};
-
-    // for (int i = 0; i <= 2; i++) {
-    //     insertHead(nums[i]);
-    // }
-
-    // //遍历链表
-    // struct LNode *temp = head;
-    // while (temp != NULL) {
-    //     printf("%d\n", temp->data);
-    //     temp = temp -> next;
-    // }
-
     
-    // // 尾插法插入新节点(以相同的顺序插入)
-    // int nums[3] = {10, 20, 30};
-
-    // for (int i = 0; i <= 2; i++) {
-    //     insertLast_lesstime(nums[i]);
-    //     // // 或用
-    //     // insertLast(nums[i]);
-    // }
-
-    // // 遍历链表
-    // struct LNode *temp = head;
-    // while (temp != NULL) {
-    //     printf("%d\n", temp->data);
-    //     temp = temp -> next;
-    // }
-
-    // // 删除节点
-    // int nums[4] = {10, 20, 30, 40};
-
-    // // 插入节点
-    // for (int i = 0; i < 4; i++) {
-    //     insertLast_lesstime(nums[i]);
-    // }
-    // // 删除节点
-    // bool result = deleteNode(&head, 30);
-    // // 遍历链表
-    // struct LNode *temp = head;
-    // while (temp != NULL) {
-    //     printf("%d\n", temp -> data);
-    //     temp = temp -> next;
-    // }
-
-    // // 搜索节点
-    // struct LNode *result1 = searchNode(head, 10);
-    // struct LNode *result2 = searchNode(head, 30);
-
-    // if (result1 == NULL) {
-    //     printf("未搜索到\n");
-    // } else {
-    //     printf("%d\n", result1->data);
-    // }
-
-    // if (result2 == NULL) {
-    //     printf("未搜索到\n");
-    // } else {
-    //     printf("%d\n", result2->data);
-    // }
-
-
-
-    // // 带头结点的赋值
-    // init_global_head(sizeof(LNode));
-    // head -> next = NULL;
-    // head -> data = 0;
-
-
-
-    // 双链表的构建(可以实现循环链表，即last的next指向head，head的prior指向last)
-    DLinkList head = (DNode *)malloc(sizeof(DNode));
-    DNode* first = (DNode *)malloc(sizeof(DNode));
-    DNode* middle = (DNode *)malloc(sizeof(DNode));
-    DNode* last = (DNode *)malloc(sizeof(DNode));
-
-    head -> data = NULL;
-    first -> data = 10;
-    middle -> data = 20;
-    last -> data = 30;
-
-    head -> next = first;
-    first -> prior = head;
-    first -> next = middle;
-    middle -> prior = first;
-    middle -> next = last;
-    last -> prior = middle;
-    last -> next = NULL;
 
     return 0;
 }
+
+
+
+
