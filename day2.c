@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include <uthash.h>
-#include <stdbool.h>
+
 
 
 // 1、两数之和：
@@ -482,9 +482,30 @@
 // 链表节点
 typedef struct _ListNode {
     struct _ListNode* next;
-    int key;
-    void *data;     // 键值对
+    int key;      // 表明在Thelists中的索引位置
+    int data;     // 键值对
 }ListNode, *List;
+
+
+// 尾插法插入带头节点链表的新节点
+void insertLast (int e, ListNode *head) {
+    ListNode *temp = head;
+    ListNode *newNode = (ListNode *)malloc(sizeof(ListNode));
+    if (newNode == NULL) {
+        printf("newNode malloc error\n");
+        return ;
+    }
+
+    newNode -> key = 0;
+    newNode -> data = e;
+
+    while (temp -> next != NULL) {
+        temp = temp -> next;
+    }
+
+    temp -> next = newNode;
+    newNode -> next = NULL;
+}
 
 // 哈希表
 typedef struct _HashTable {
@@ -494,7 +515,7 @@ typedef struct _HashTable {
 
 // 哈希函数:传递一个key 计算索引，定位Hash桶的位置
 int Hash(int key, int TableSize) {
-    return (key%TableSize);
+    return (key % TableSize);
 }
 
 // 初始化哈希表
@@ -536,8 +557,34 @@ HashTable *InitHash(int TableSize) {
     return hTable;
 }
 
+
 int main() {
-    
+    // 数据存储示例
+    int nums[10] = {0,1,3,4,5,8,9,16,17,19};
+
+    // 初始化一个哈希表
+    HashTable *hTable1 = InitHash(DEFAULT_SIZE);
+    if (hTable1 == NULL) {
+        return -1;
+    }
+
+    for (int i = 0; i < 10; i++) {
+        int value = nums[i];
+        int Hash_value = Hash(value, hTable1->TableSize);
+
+        // 数据插入对应的Hash桶中的位置链表中
+        insertLast(value, hTable1->Thelists[Hash_value]);
+    }
+
+    // 试试遍历哈希表数据
+    ListNode *circleNode = hTable1 -> Thelists[0] -> next;
+    while (circleNode != NULL) {
+        printf("%d\n", circleNode->data);
+        circleNode = circleNode -> next;            // 输出 0,16 正确
+    }
+
+    free(hTable1);
+    hTable1 = NULL;
 
     return 0;
 }

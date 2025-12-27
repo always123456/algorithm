@@ -322,7 +322,43 @@ HashTable *InitTable(int TableSize) {
 	return hTable;
 }
 ```
+### 2.3 哈希表存储并访问数据示例：
+``` c
+int main() {
+	// 数据存储示例
+	int nums[10] = {0,1,3,4,5,8,9,16,17,19};
 
+	// 初始化一个哈希表
+	HashTable *hTable1 = InitHash(DEFAULT_SIZE);
+	if (hTable1 == NULL) {
+		return -1;
+	}
+
+	for (int i = 0; i < 10; i++) {
+		int value = nums[i];
+		int Hash_value = Hash(value, hTable1->TableSize);
+		
+		// 数据插入对应的Hash桶中的位置链表中
+		insertLast(value, hTable1->Thelists[Hash_value]);
+		// insertLast()函数：尾插法插入新节点到一个带头节点的链表中
+	}
+
+	// 试试遍历哈希表数据
+	ListNode *circleNode = hTable1 -> Thelists[0] -> next;
+	// 去掉头节点，遍历第一个链表
+
+	while (circleNode != NULL) {
+		printf("%d\n", circleNode->data);
+		circleNode = circleNode -> next; // 输出 0,16 正确
+	}
+
+	// 释放内存空间
+	free(hTable1);
+	hTable1 = NULL;
+	
+	return 0;
+}
+```
 
 
 
