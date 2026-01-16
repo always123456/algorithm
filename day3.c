@@ -117,7 +117,50 @@ void insertSort_op(int *arr, size_t length) {
 
 
 
-// 4、
+// 4、希尔排序：插入排序的优化
+// 错误的：
+void hillSort(int *arr, size_t length) {
+    size_t gap = length / 2;
+    while (gap >= 1) {
+        for (size_t i = 0; i < gap; i++) {
+            size_t count = 1;
+            int tmp = 0;
+            while (i + gap * count < length) {
+                if (arr[i + gap * count] >= arr[i + gap *(count - 1)]) {
+                    ++count;
+                } else {
+                    tmp = arr[i + gap * count];
+                    size_t back = 1;
+                    while (back <= count - 1 && arr[i + gap * (count - back)] > tmp) {
+                        arr[i + gap * (count - back + 1)] = arr[i + gap * (count - back)];
+                        ++back;
+                    }
+                    arr[i + gap * (count - back + 1)] = tmp;
+                }
+                ++count;
+            }
+        }
+        gap = gap / 2;
+    }
+}
+
+// AI代码太完美了：
+void shellSort_op(int *arr, size_t length) {
+    for (size_t gap = length / 2; gap > 0; gap /= 2) {  // gap不断取半，缩小范围至 1
+        for (size_t i = gap; i < length; ++i) {  // 对以gap长度为间隔的数组进行插入排序
+            int temp = arr[i];
+            size_t j = i;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            arr[j] = temp;
+        }
+    }
+}
+
+
+
 int main() {
     int arr[10] = {3,2,20,4,11,6,5,9,8,1};
 
@@ -128,7 +171,10 @@ int main() {
     // selectedSort(arr, 10);
 
     // 3、插入排序：
-    insertSort_op(arr, 10);
+    // insertSort_op(arr, 10);
+
+    // 4、希尔排序
+    shellSort_op(arr, 10);
 
     for (int i = 0; i < 10; i++) {
         printf("%d\n", arr[i]);

@@ -104,3 +104,20 @@ void insertSort_op(int *arr, size_t length) {
 	}
 }
 ```
+## 4. 希尔排序
+插入排序的优化：
+``` c
+void shellSort_op(int *arr, size_t length) {
+	for (size_t gap = length / 2; gap >= 1; gap /= 2) {
+		for (size_t i = gap; i < length; i++) {
+			int tmp = arr[i];
+			j = i;
+			while (j >= gap && arr[j - gap] > tmp ) {
+				arr[j] = arr[j - gap];
+				j -= gap;
+			}
+			arr[j] = tmp;
+		}
+	}
+}
+```
